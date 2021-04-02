@@ -1,4 +1,4 @@
 example_id                                                 | status | run_time        |
 ---------------------------------------------------------- | ------ | --------------- |
-./spec/ffordd/translators/sass_translator_spec.rb[1:1:1:1] | passed | 0.00078 seconds |
-./spec/ffordd/translators/sass_translator_spec.rb[1:1:2:1] | passed | 0.00007 seconds |
+./spec/ffordd/translators/sass_translator_spec.rb[1:1:1:1] | passed | 0.00127 seconds |
+./spec/ffordd/translators/sass_translator_spec.rb[1:1:2:1] | passed | 0.00012 seconds |
