@@ -1,2 +1,2 @@
 test:
-	bundle exec rspec
+	bundle exec rspec --format documentation
