@@ -5,7 +5,7 @@ describe "SassTranslator" do
 
     describe ".translate" do
         context "when translate is invoked with a design token category that has token" do
-            mock_input = JSON.parse('{"colours": {"dark": "#121111"}}')
+            let(:mock_input) { JSON.parse('{"colours": {"dark": "#121111"}}') }
             let(:output) { SassTranslator.new(mock_input).translate() }
 
             it "correctly translates it into a Sass list" do
@@ -15,7 +15,7 @@ describe "SassTranslator" do
         end
 
         context "when translate is invoked with two token categories that has one token each" do
-            mock_input = JSON.parse('{"colours": {"dark": "#121111"}, "fonts": {"content": "Times New Roman"}}')
+            let(:mock_input) { JSON.parse('{"colours": {"dark": "#121111"}, "fonts": {"content": "Times New Roman"}}') }
             let(:output) { SassTranslator.new(mock_input).translate() }
 
             it "correctly translates them into two Sass lists" do
