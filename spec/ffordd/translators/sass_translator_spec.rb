@@ -19,7 +19,7 @@ describe 'SassTranslator' do
       let(:translation) { SassTranslator.new(mock_input).translate }
 
       it 'correctly translates the token category and properties into a Sass list with valid syntax' do
-        result = [{ '$colours' => ["\t\'$dark\': #121111"] }]
+        result = [{ '$colours' => ["\t'$dark': #121111\n);\n"] }]
         expect(translation).to eq(result)
       end
     end
@@ -32,13 +32,7 @@ describe 'SassTranslator' do
 
       it 'correctly translates the token category and its properties into a Sass list with valid syntax' do
         result = [
-          {
-            '$colours: (' => [
-              "\t\'$dark\': #121111,\n",
-              "\t'$light': #fff\n",
-              ")\n"
-            ]
-          }
+          { '$colours' => ["\t'$dark': #121111,\n", "\t'$light': #fff\n);\n"] }
         ]
         expect(translation).to eq(result)
       end
@@ -54,8 +48,8 @@ describe 'SassTranslator' do
 
       it 'correctly translates the token categories and their properties into a Sass list with valid syntax' do
         result = [
-          { '$colours' => ["\t\'$dark\': #121111"] },
-          { '$fonts' => ["\t\'$content\': Times New Roman"] }
+          { '$colours' => ["\t'$dark': #121111\n);\n"] },
+          { '$fonts' => ["\t'$content': Times New Roman\n);\n"] }
         ]
         expect(translation).to eq(result)
       end

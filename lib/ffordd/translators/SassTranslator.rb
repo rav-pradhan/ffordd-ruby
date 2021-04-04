@@ -8,13 +8,12 @@ class SassTranslator
   def translate
     @translation_errors = []
     check_input_state
-    translate_to_valid_syntax
+    translate_input_to_valid_syntax
     translate_result_payload
   end
 
   def export_to(path)
     @export_errors = []
-
     check_output_state
     export_result_payload
   end
@@ -31,7 +30,7 @@ class SassTranslator
     end
   end
 
-  def translate_to_valid_syntax
+  def translate_input_to_valid_syntax
     @translation =
       @input.map do |category, category_value|
         category_tokens = tokenise_category_values(category_value)
@@ -41,7 +40,11 @@ class SassTranslator
 
   def tokenise_category_values(category_value)
     category_value.map.with_index do |(property, value), index|
-      ("\t'$#{property}': #{value}")
+      if category_value.length - 1 == index
+        ("\t'$#{property}': #{value}\n") + (");\n")
+      else
+        ("\t'$#{property}': #{value},\n")
+      end
     end
   end
 
