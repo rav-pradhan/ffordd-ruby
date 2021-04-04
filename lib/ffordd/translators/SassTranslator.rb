@@ -1,8 +1,9 @@
 class SassTranslator
   @translation = []
 
-  def initialize(input)
+  def initialize(input, writer)
     @input = input
+    @writer = writer
   end
 
   def translate
@@ -15,7 +16,7 @@ class SassTranslator
   def export_to(path)
     @export_errors = []
     check_output_state
-    export_result_payload
+    @export_errors.empty? ? @writer.export(path, @translation) : @export_errors
   end
 
   private
@@ -50,10 +51,15 @@ class SassTranslator
 
   def translate_result_payload
     return { errors: @translation_errors } unless @translation_errors.empty?
-    @translation
+    { result: @translation, errors: nil }
   end
 
-  def export_result_payload
+  def export_translated_file(path, file_name)
+    writer.export(path, file_name)
+  end
+
+  def export_result_payload(export)
     return { errors: @export_errors } unless @export_errors.empty?
+    { result: export, errors: nil }
   end
 end
