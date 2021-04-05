@@ -2,31 +2,32 @@ require 'spec_helper'
 require 'json'
 
 describe 'SassTranslator' do
-  before(:each) { @mock_writer = MockWriter.new }
+  before(:each) { 
+    @mock_writer = MockWriter.new 
+    @mock_presenter = MockPresenter.new
+  }
 
   describe '.translate' do
     context 'given an empty input' do
       let(:empty_input) { JSON.parse('{}') }
-      let(:translation) do
-        SassTranslator.new(empty_input, @mock_writer).translate
-      end
 
-      it 'returns a message saying no input has been provided' do
-        expect(translation[:errors]).to eq(
-          ['No input provided for translation']
-        )
+      it 'calls the presenter object\'s display_errors method' do
+        SassTranslator.new(empty_input, @mock_writer).translate(@mock_presenter)
+        expect(@mock_presenter.display_errors_called).to be_truthy
       end
     end
 
     context 'when invoked with a token category that has one token' do
       let(:mock_input) { JSON.parse('{"colours": {"dark": "#121111"}}') }
-      let(:translation) do
-        SassTranslator.new(mock_input, @mock_writer).translate
+      let(:translator) do
+        SassTranslator.new(mock_input, @mock_writer)
       end
 
       it 'correctly translates the token category and properties into a Sass list with valid syntax' do
         result = [{ '$colours' => ["\t'$dark': #121111\n);\n"] }]
-        expect(translation[:result]).to eq(result)
+        translator.translate(@mock_presenter)
+        expect(translator.translation).to eq(result)
+        expect(@mock_presenter.display_success).to be_truthy
       end
     end
 
@@ -34,15 +35,16 @@ describe 'SassTranslator' do
       let(:mock_input) do
         JSON.parse('{"colours": {"dark": "#121111", "light": "#fff"}}')
       end
-      let(:translation) do
-        SassTranslator.new(mock_input, @mock_writer).translate
+      let(:translator) do
+        SassTranslator.new(mock_input, @mock_writer)
       end
 
       it 'correctly translates the token category and its properties into a Sass list with valid syntax' do
         result = [
           { '$colours' => ["\t'$dark': #121111,\n", "\t'$light': #fff\n);\n"] }
         ]
-        expect(translation[:result]).to eq(result)
+        translator.translate(@mock_presenter)
+        expect(translator.translation).to eq(result)
       end
     end
 
@@ -52,8 +54,8 @@ describe 'SassTranslator' do
           '{"colours": {"dark": "#121111"}, "fonts": {"content": "Times New Roman"}}'
         )
       end
-      let(:translation) do
-        SassTranslator.new(mock_input, @mock_writer).translate
+      let(:translator) do
+        SassTranslator.new(mock_input, @mock_writer)
       end
 
       it 'correctly translates the token categories and their properties into a Sass list with valid syntax' do
@@ -61,7 +63,8 @@ describe 'SassTranslator' do
           { '$colours' => ["\t'$dark': #121111\n);\n"] },
           { '$fonts' => ["\t'$content': Times New Roman\n);\n"] }
         ]
-        expect(translation[:result]).to eq(result)
+        translator.translate(@mock_presenter)
+        expect(translator.translation).to eq(result)
       end
     end
   end
@@ -90,21 +93,40 @@ describe 'SassTranslator' do
       let(:translator) { SassTranslator.new(mock_input, @mock_writer) }
 
       it 'calls export from the writer dependency' do
-        translation_result = translator.translate
+        translator.translate(@mock_presenter)
         export_result = translator.export_to('./path')
-        expect(@mock_writer.has_been_called).to be_truthy
+        expect(@mock_writer.export_called).to be_truthy
+        expect(export_result[:path]).to eq('./path')
       end
     end
   end
 end
 
 class MockWriter
-  @export_called = nil
-  def export(path, translation)
+
+  attr_reader :export_called
+
+  @export_called = false
+
+  def export(path, translated_file)
     @export_called = true
+    { path: path, file_content: translated_file }
+  end
+end
+
+class MockPresenter
+
+  attr_reader :display_errors_called, :display_success_called
+  
+  @display_errors_called = false
+  @display_success_called = false
+
+  def display_errors(errors)
+    @display_errors_called = true
+    errors
   end
 
-  def has_been_called
-    @export_called
+  def display_success
+    @display_success_called = true
   end
 end

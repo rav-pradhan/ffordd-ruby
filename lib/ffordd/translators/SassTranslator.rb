@@ -1,16 +1,18 @@
 class SassTranslator
-  @translation = []
+  
+  attr_reader :translation
 
   def initialize(input, writer)
     @input = input
     @writer = writer
+    @translation = []
   end
 
-  def translate
+  def translate(presenter)
     @translation_errors = []
     check_input_state
     translate_input_to_valid_syntax
-    translate_result_payload
+    @translation_errors.empty? ? presenter.display_success : presenter.display_errors(@translation_errors)
   end
 
   def export_to(path)
@@ -26,7 +28,7 @@ class SassTranslator
   end
 
   def check_output_state
-    if @translation.nil?
+    if @translation.empty?
       @export_errors << 'Please run translate on a file first before exporting'
     end
   end
@@ -56,10 +58,5 @@ class SassTranslator
 
   def export_translated_file(path, file_name)
     writer.export(path, file_name)
-  end
-
-  def export_result_payload(export)
-    return { errors: @export_errors } unless @export_errors.empty?
-    { result: export, errors: nil }
   end
 end
