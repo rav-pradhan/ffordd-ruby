@@ -1,5 +1,4 @@
 class SassTranslator
-  
   attr_reader :translation
 
   def initialize(input, writer)
@@ -12,7 +11,11 @@ class SassTranslator
     @translation_errors = []
     check_input_state
     translate_input_to_valid_syntax
-    @translation_errors.empty? ? presenter.display_success : presenter.display_errors(@translation_errors)
+    if @translation_errors.empty?
+      presenter.display_success
+    else
+      presenter.display_errors(@translation_errors)
+    end
   end
 
   def export_to(path)

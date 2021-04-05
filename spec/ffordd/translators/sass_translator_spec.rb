@@ -2,10 +2,10 @@ require 'spec_helper'
 require 'json'
 
 describe 'SassTranslator' do
-  before(:each) { 
-    @mock_writer = MockWriter.new 
+  before(:each) do
+    @mock_writer = MockWriter.new
     @mock_presenter = MockPresenter.new
-  }
+  end
 
   describe '.translate' do
     context 'given an empty input' do
@@ -19,9 +19,7 @@ describe 'SassTranslator' do
 
     context 'when invoked with a token category that has one token' do
       let(:mock_input) { JSON.parse('{"colours": {"dark": "#121111"}}') }
-      let(:translator) do
-        SassTranslator.new(mock_input, @mock_writer)
-      end
+      let(:translator) { SassTranslator.new(mock_input, @mock_writer) }
 
       it 'correctly translates the token category and properties into a Sass list with valid syntax' do
         result = [{ '$colours' => ["\t'$dark': #121111\n);\n"] }]
@@ -35,9 +33,7 @@ describe 'SassTranslator' do
       let(:mock_input) do
         JSON.parse('{"colours": {"dark": "#121111", "light": "#fff"}}')
       end
-      let(:translator) do
-        SassTranslator.new(mock_input, @mock_writer)
-      end
+      let(:translator) { SassTranslator.new(mock_input, @mock_writer) }
 
       it 'correctly translates the token category and its properties into a Sass list with valid syntax' do
         result = [
@@ -54,9 +50,7 @@ describe 'SassTranslator' do
           '{"colours": {"dark": "#121111"}, "fonts": {"content": "Times New Roman"}}'
         )
       end
-      let(:translator) do
-        SassTranslator.new(mock_input, @mock_writer)
-      end
+      let(:translator) { SassTranslator.new(mock_input, @mock_writer) }
 
       it 'correctly translates the token categories and their properties into a Sass list with valid syntax' do
         result = [
@@ -103,7 +97,6 @@ describe 'SassTranslator' do
 end
 
 class MockWriter
-
   attr_reader :export_called
 
   @export_called = false
@@ -115,9 +108,8 @@ class MockWriter
 end
 
 class MockPresenter
-
   attr_reader :display_errors_called, :display_success_called
-  
+
   @display_errors_called = false
   @display_success_called = false
 
