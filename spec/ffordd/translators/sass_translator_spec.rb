@@ -1,5 +1,7 @@
 require 'spec_helper'
 require 'json'
+require 'ffordd/mocks/MockPresenter'
+require 'ffordd/mocks/MockWriter'
 
 describe 'SassTranslator' do
   before(:each) do
@@ -93,32 +95,5 @@ describe 'SassTranslator' do
         expect(export_result[:path]).to eq('./path')
       end
     end
-  end
-end
-
-class MockWriter
-  attr_reader :export_called
-
-  @export_called = false
-
-  def export(path, translated_file)
-    @export_called = true
-    { path: path, file_content: translated_file }
-  end
-end
-
-class MockPresenter
-  attr_reader :display_errors_called, :display_success_called
-
-  @display_errors_called = false
-  @display_success_called = false
-
-  def display_errors(errors)
-    @display_errors_called = true
-    errors
-  end
-
-  def display_success
-    @display_success_called = true
   end
 end
