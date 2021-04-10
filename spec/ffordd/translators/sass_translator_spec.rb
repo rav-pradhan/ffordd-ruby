@@ -1,5 +1,7 @@
 require 'spec_helper'
 require 'json'
+require 'ffordd/mocks/MockPresenter'
+require 'ffordd/mocks/MockWriter'
 
 describe 'SassTranslator' do
   before(:each) do
@@ -13,7 +15,7 @@ describe 'SassTranslator' do
 
       it 'calls the presenter object\'s display_errors method' do
         SassTranslator.new(empty_input, @mock_writer).translate(@mock_presenter)
-        expect(@mock_presenter.display_errors_called).to be_truthy
+        expect(@mock_presenter.display_errors_called?).to be_truthy
       end
     end
 
@@ -22,7 +24,7 @@ describe 'SassTranslator' do
       let(:translator) { SassTranslator.new(mock_input, @mock_writer) }
 
       it 'correctly translates the token category and properties into a Sass list with valid syntax' do
-        result = [{ '$colours' => ["\t'$dark': #121111\n);\n"] }]
+        result = "$colours: (\n \t'$dark': #121111\n);\n"
         translator.translate(@mock_presenter)
         expect(translator.translation).to eq(result)
         expect(@mock_presenter.display_success).to be_truthy
@@ -36,9 +38,7 @@ describe 'SassTranslator' do
       let(:translator) { SassTranslator.new(mock_input, @mock_writer) }
 
       it 'correctly translates the token category and its properties into a Sass list with valid syntax' do
-        result = [
-          { '$colours' => ["\t'$dark': #121111,\n", "\t'$light': #fff\n);\n"] }
-        ]
+        result = "$colours: (\n \t'$dark': #121111,\n \t'$light': #fff\n);\n"
         translator.translate(@mock_presenter)
         expect(translator.translation).to eq(result)
       end
@@ -53,10 +53,8 @@ describe 'SassTranslator' do
       let(:translator) { SassTranslator.new(mock_input, @mock_writer) }
 
       it 'correctly translates the token categories and their properties into a Sass list with valid syntax' do
-        result = [
-          { '$colours' => ["\t'$dark': #121111\n);\n"] },
-          { '$fonts' => ["\t'$content': Times New Roman\n);\n"] }
-        ]
+        result =
+          "$colours: (\n \t'$dark': #121111\n);\n  \t'$content': Times New Roman\n);\n $colours: (\n \t'$dark': #121111\n);\n  \t'$content': Times New Roman\n);\n"
         translator.translate(@mock_presenter)
         expect(translator.translation).to eq(result)
       end
@@ -78,6 +76,20 @@ describe 'SassTranslator' do
       end
     end
 
+    context 'when invoked with an empty path' do
+      let(:mock_input) do
+        JSON.parse(
+          '{"colours": {"dark": "#121111"}, "fonts": {"content": "Times New Roman"}}'
+        )
+      end
+      let(:translator) { SassTranslator.new(mock_input, @mock_writer) }
+
+      it 'returns a message saying the export path cannot be empty' do
+        translator.translate(@mock_presenter)
+        expect(translator.export_to('')).to eq(['Export path cannot be empty'])
+      end
+    end
+
     context 'when invoked after a successful translate' do
       let(:mock_input) do
         JSON.parse(
@@ -93,32 +105,5 @@ describe 'SassTranslator' do
         expect(export_result[:path]).to eq('./path')
       end
     end
-  end
-end
-
-class MockWriter
-  attr_reader :export_called
-
-  @export_called = false
-
-  def export(path, translated_file)
-    @export_called = true
-    { path: path, file_content: translated_file }
-  end
-end
-
-class MockPresenter
-  attr_reader :display_errors_called, :display_success_called
-
-  @display_errors_called = false
-  @display_success_called = false
-
-  def display_errors(errors)
-    @display_errors_called = true
-    errors
-  end
-
-  def display_success
-    @display_success_called = true
   end
 end

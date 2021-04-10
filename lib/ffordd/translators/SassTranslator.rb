@@ -11,6 +11,7 @@ class SassTranslator
     @translation_errors = []
     check_input_state
     translate_input_to_valid_syntax
+    stringify_translation_for_export
     if @translation_errors.empty?
       presenter.display_success
     else
@@ -20,7 +21,7 @@ class SassTranslator
 
   def export_to(path)
     @export_errors = []
-    check_output_state
+    validate_export_requirements(path)
     @export_errors.empty? ? @writer.export(path, @translation) : @export_errors
   end
 
@@ -30,17 +31,19 @@ class SassTranslator
     @translation_errors << 'No input provided for translation' if @input.empty?
   end
 
-  def check_output_state
+  def validate_export_requirements(path)
     if @translation.empty?
       @export_errors << 'Please run translate on a file first before exporting'
     end
+
+    @export_errors << 'Export path cannot be empty' if path.empty?
   end
 
   def translate_input_to_valid_syntax
     @translation =
       @input.map do |category, category_value|
         category_tokens = tokenise_category_values(category_value)
-        { '$' + category => category_tokens }
+        { '$' + category + ": (\n" => category_tokens }
       end
   end
 
@@ -54,12 +57,15 @@ class SassTranslator
     end
   end
 
-  def translate_result_payload
-    return { errors: @translation_errors } unless @translation_errors.empty?
-    { result: @translation, errors: nil }
-  end
-
-  def export_translated_file(path, file_name)
-    writer.export(path, file_name)
+  def stringify_translation_for_export()
+    stringified_output = []
+    stringified_output =
+      @translation.map.with_index do |(property, value), index|
+        stringified_output << property.keys[index]
+        property.map do |token_key, token_value|
+          stringified_output << token_value
+        end
+      end
+    @translation = stringified_output.join(' ')
   end
 end
