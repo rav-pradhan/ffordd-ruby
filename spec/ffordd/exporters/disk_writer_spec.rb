@@ -8,7 +8,6 @@ RSpec.configure do |config|
 end
 
 describe 'DiskWriter' do
-
   describe '.export' do
     let(:file_name) { 'test_sass_tokens' }
     let(:file_format) { 'scss' }
@@ -19,9 +18,7 @@ describe 'DiskWriter' do
         translation =
           "$colours: ( \n\t'$dark': #121111,\n \t'$light': #fff\n);\n"
         exporter.export('./spec/ffordd/exporters/test_exports', translation)
-        expect(File).to exist(
-          TEST_EXPORTS_DIRECTORY + '/test_sass_tokens.scss'
-        )
+        expect(File).to exist(TEST_EXPORTS_DIRECTORY + '/test_sass_tokens.scss')
       end
     end
   end
