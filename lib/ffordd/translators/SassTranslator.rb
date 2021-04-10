@@ -11,6 +11,7 @@ class SassTranslator
     @translation_errors = []
     check_input_state
     translate_input_to_valid_syntax
+    stringify_translation_for_export
     if @translation_errors.empty?
       presenter.display_success
     else
@@ -42,7 +43,6 @@ class SassTranslator
         category_tokens = tokenise_category_values(category_value)
         { '$' + category + ": (\n" => category_tokens }
       end
-    stringify()
   end
 
   def tokenise_category_values(category_value)
@@ -55,14 +55,15 @@ class SassTranslator
     end
   end
 
-  def stringify()
+  def stringify_translation_for_export()
     stringified_output = []
-    stringified_output = @translation.map.with_index do |(property, value), index| 
+    stringified_output =
+      @translation.map.with_index do |(property, value), index|
         stringified_output << property.keys[index]
         property.map do |token_key, token_value|
-            stringified_output << token_value
+          stringified_output << token_value
         end
-    end
-    @translation = stringified_output.join(" ")
+      end
+    @translation = stringified_output.join(' ')
   end
 end

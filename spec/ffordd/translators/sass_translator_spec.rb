@@ -53,7 +53,8 @@ describe 'SassTranslator' do
       let(:translator) { SassTranslator.new(mock_input, @mock_writer) }
 
       it 'correctly translates the token categories and their properties into a Sass list with valid syntax' do
-        result = "$colours: (\n \t'$dark': #121111\n);\n  \t'$content': Times New Roman\n);\n $colours: (\n \t'$dark': #121111\n);\n  \t'$content': Times New Roman\n);\n"
+        result =
+          "$colours: (\n \t'$dark': #121111\n);\n  \t'$content': Times New Roman\n);\n $colours: (\n \t'$dark': #121111\n);\n  \t'$content': Times New Roman\n);\n"
         translator.translate(@mock_presenter)
         expect(translator.translation).to eq(result)
       end
