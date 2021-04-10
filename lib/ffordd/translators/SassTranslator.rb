@@ -21,7 +21,7 @@ class SassTranslator
 
   def export_to(path)
     @export_errors = []
-    check_output_state
+    validate_export_requirements(path)
     @export_errors.empty? ? @writer.export(path, @translation) : @export_errors
   end
 
@@ -31,10 +31,12 @@ class SassTranslator
     @translation_errors << 'No input provided for translation' if @input.empty?
   end
 
-  def check_output_state
+  def validate_export_requirements(path)
     if @translation.empty?
       @export_errors << 'Please run translate on a file first before exporting'
     end
+
+    @export_errors << 'Export path cannot be empty' if path.empty?
   end
 
   def translate_input_to_valid_syntax

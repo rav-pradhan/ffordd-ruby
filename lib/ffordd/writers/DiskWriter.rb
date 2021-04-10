@@ -1,9 +1,8 @@
 require 'fileutils'
 class DiskWriter
-  def initialize(file_name, file_format, presenter)
+  def initialize(file_name, file_format)
     @file_name = file_name
     @file_format = file_format
-    @presenter = presenter
   end
 
   def export(path, translation_content)
@@ -25,9 +24,6 @@ class DiskWriter
 
   def create_file_in(path)
     FileUtils.mkdir_p(path) unless File.directory?(path)
-
-    FileUtils.mkdir_p(path) unless File.directory?(path)
-
     path << '/' + @file_name + ".#{@file_format}"
     File.new(path, 'w')
   end

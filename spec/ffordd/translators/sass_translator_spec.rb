@@ -15,7 +15,7 @@ describe 'SassTranslator' do
 
       it 'calls the presenter object\'s display_errors method' do
         SassTranslator.new(empty_input, @mock_writer).translate(@mock_presenter)
-        expect(@mock_presenter.display_errors_called).to be_truthy
+        expect(@mock_presenter.display_errors_called?).to be_truthy
       end
     end
 
@@ -73,6 +73,20 @@ describe 'SassTranslator' do
         expect(result).to eq(
           ['Please run translate on a file first before exporting']
         )
+      end
+    end
+
+    context 'when invoked with an empty path' do
+      let(:mock_input) do
+        JSON.parse(
+          '{"colours": {"dark": "#121111"}, "fonts": {"content": "Times New Roman"}}'
+        )
+      end
+      let(:translator) { SassTranslator.new(mock_input, @mock_writer) }
+
+      it 'returns a message saying the export path cannot be empty' do
+        translator.translate(@mock_presenter)
+        expect(translator.export_to('')).to eq(['Export path cannot be empty'])
       end
     end
 
