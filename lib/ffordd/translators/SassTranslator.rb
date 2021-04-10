@@ -40,8 +40,9 @@ class SassTranslator
     @translation =
       @input.map do |category, category_value|
         category_tokens = tokenise_category_values(category_value)
-        { '$' + category => category_tokens }
+        { '$' + category + ": (\n" => category_tokens }
       end
+    stringify()
   end
 
   def tokenise_category_values(category_value)
@@ -54,12 +55,14 @@ class SassTranslator
     end
   end
 
-  def translate_result_payload
-    return { errors: @translation_errors } unless @translation_errors.empty?
-    { result: @translation, errors: nil }
-  end
-
-  def export_translated_file(path, file_name)
-    writer.export(path, file_name)
+  def stringify()
+    stringified_output = []
+    stringified_output = @translation.map.with_index do |(property, value), index| 
+        stringified_output << property.keys[index]
+        property.map do |token_key, token_value|
+            stringified_output << token_value
+        end
+    end
+    @translation = stringified_output.join(" ")
   end
 end
