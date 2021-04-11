@@ -3,6 +3,7 @@ class MockPresenter
 
   @display_errors_called = false
   @display_success_called = false
+  @display_logs_called = false
   @recorded_errors = []
 
   def display_errors(errors)
@@ -10,8 +11,14 @@ class MockPresenter
     self.recorded_errors = errors
   end
 
-  def display_success
+  def display_success(success_message)
+    puts success_message
     @display_success_called = true
+  end
+
+  def display_log(log)
+    @display_logs_called = true
+    puts log
   end
 
   def display_errors_called?

@@ -1,6 +1,10 @@
 class SassTranslator
   attr_reader :translation
 
+  TOKENS_TRANSLATION_IN_PROGRESS = "Design tokens are being translated..."
+  TOKENS_SUCCESSFULLY_TRANSLATED = "Design tokens were translated into Sass syntax successfully"
+  EXPORT_IN_PROGRESS = "File export is in progress..."
+
   def initialize(input, writer)
     @input = input
     @writer = writer
@@ -8,12 +12,13 @@ class SassTranslator
   end
 
   def translate(presenter)
+    presenter.display_log(TOKENS_TRANSLATION_IN_PROGRESS)
     @translation_errors = []
     check_input_state
     translate_input_to_valid_syntax
     stringify_translation_for_export
     if @translation_errors.empty?
-      presenter.display_success
+      presenter.display_success(TOKENS_SUCCESSFULLY_TRANSLATED)
     else
       presenter.display_errors(@translation_errors)
     end
