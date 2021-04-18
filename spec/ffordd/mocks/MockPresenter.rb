@@ -10,7 +10,7 @@ class MockPresenter
     self.recorded_errors = errors
   end
 
-  def display_success
+  def display_success(message)
     @display_success_called = true
   end
 

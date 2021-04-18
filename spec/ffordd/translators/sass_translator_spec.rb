@@ -27,7 +27,7 @@ describe 'SassTranslator' do
         result = "$colours: (\n \t'$dark': #121111\n);\n"
         translator.translate(@mock_presenter)
         expect(translator.translation).to eq(result)
-        expect(@mock_presenter.display_success).to be_truthy
+        expect(@mock_presenter.display_success_called?).to be_truthy
       end
     end
 

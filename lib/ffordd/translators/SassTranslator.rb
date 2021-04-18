@@ -13,7 +13,9 @@ class SassTranslator
     translate_input_to_valid_syntax
     stringify_translation_for_export
     if @translation_errors.empty?
-      presenter.display_success
+      presenter.display_success(
+        'Successfully translated input file to Sass DSL. Now ready for export.'
+      )
     else
       presenter.display_errors(@translation_errors)
     end
