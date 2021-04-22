@@ -11,18 +11,12 @@ class MockPresenter
     self.recorded_errors = errors
   end
 
-<<<<<<< HEAD
-  def display_success(success_message)
-    puts success_message
-=======
   def display_success(message)
->>>>>>> feature/disk_writer
     @display_success_called = true
   end
 
   def display_log(log)
     @display_logs_called = true
-    puts log
   end
 
   def display_errors_called?
