@@ -5,7 +5,7 @@ class JSONReader
     parse_as_json(file_for_translation)
     if @reader_errors.empty?
       presenter.display_success(
-        'Successfully read file. Now ready for translation'
+        'Successfully read JSON file. Now ready for translation'
       )
     else
       presenter.display_errors(@reader_errors)
