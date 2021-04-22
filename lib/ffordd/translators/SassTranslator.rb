@@ -19,7 +19,13 @@ class SassTranslator
     translate_input_to_valid_syntax
     stringify_translation_for_export
     if @translation_errors.empty?
+<<<<<<< HEAD
       presenter.display_success(TOKENS_SUCCESSFULLY_TRANSLATED)
+=======
+      presenter.display_success(
+        'Successfully translated input file to Sass DSL. Now ready for export.'
+      )
+>>>>>>> feature/disk_writer
     else
       presenter.display_errors(@translation_errors)
     end

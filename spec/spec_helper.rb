@@ -1,6 +1,7 @@
 require 'bundler/setup'
 require 'ffordd/translators/SassTranslator'
 require 'ffordd/writers/DiskWriter'
+require 'ffordd/readers/JSONReader'
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
