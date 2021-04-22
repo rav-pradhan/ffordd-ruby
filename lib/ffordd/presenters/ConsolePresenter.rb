@@ -8,4 +8,8 @@ class ConsolePresenter
   def display_error(message)
     puts message.red
   end
+
+  def display_log(message)
+    puts message
+  end
 end
